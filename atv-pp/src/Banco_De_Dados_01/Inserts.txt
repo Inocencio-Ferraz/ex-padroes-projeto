@@ -1,0 +1,53 @@
+INSERT INTO categoria (nome) VALUES
+('Bolos'),
+('Pães'),
+('Salgados'),
+('Doces'),
+('Bebidas');
+
+INSERT INTO fornecedor (razao_social, cnpj) VALUES
+('M. Dias Branco', '00000000000001'),
+('Distribuidora Nordeste', '00000000000002'),
+('Laticínios Sertão', '00000000000003'),
+('Frigorífico Boa Carne', '00000000000004'),
+('Distribuidora Café Brasil', '00000000000005');
+
+INSERT INTO produto (nome, unidade_medida, preco_unitario, estoque, id_categoria) VALUES
+('Bolo de Milho', 'un', 12.00, 20, 1),
+('Bolo de Chocolate', 'un', 15.00, 15, 1),
+('Bolo de Cenoura', 'un', 14.00, 18, 1),
+('Bolo de Laranja', 'un', 13.00, 12, 1),
+('Bolo de Coco', 'un', 16.00, 10, 1),
+('Pão Francês', 'un', 0.50, 600, 2),
+('Pão Integral', 'un', 1.00, 250, 2),
+('Pão de Leite', 'un', 0.80, 200, 2),
+('Pão Doce', 'un', 1.20, 180, 2),
+('Pão de Queijo', 'un', 2.00, 150, 2),
+('Pão de Forma', 'un', 6.50, 90, 2),
+('Coxinha', 'un', 6.00, 100, 3),
+('Empada de Frango', 'un', 7.00, 80, 3),
+('Pastel de Carne', 'un', 6.50, 90, 3),
+('Esfiha', 'un', 5.50, 70, 3),
+('Quibe', 'un', 5.00, 60, 3),
+('Risole', 'un', 6.00, 75, 3),
+('Sonho', 'un', 4.50, 90, 4),
+('Pudim', 'un', 5.00, 50, 4),
+('Brigadeiro', 'un', 2.50, 200, 4),
+('Beijinho', 'un', 2.50, 180, 4),
+('Torta de Limão', 'un', 6.00, 40, 4),
+('Café Preto', 'un', 3.00, 150, 5),
+('Café com Leite', 'un', 4.00, 120, 5),
+('Suco Natural', 'un', 5.00, 80, 5),
+('Refrigerante Lata', 'un', 4.50, 200, 5),
+('Água Mineral', 'un', 2.50, 300, 5);
+
+INSERT INTO cliente (nome, cpf, telefone) VALUES
+('João Silva', '11111111111', '83999999999'),
+('Maria Oliveira', '22222222222', '83988888888');
+
+INSERT INTO funcionario (nome, cpf, cargo, data_contrato, ativo) VALUES
+('João Pereira', '12345678', 'Padeiro', '2023-01-10', true),
+('Maria Souza', '87654321', 'Caixa', '2024-02-15', true),
+('Carlos Lima', '11223344', 'Atendente', '2023-06-20', true),
+('Ana Beatriz', '44332211', 'Confeiteiro', '2022-11-05', true),
+('Pedro Santos', '99887766', 'Gerente', '2021-08-01', true);
