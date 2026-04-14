@@ -1,0 +1,271 @@
+CREATE TABLE categoria (
+    id_categoria SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE cliente (
+    id_cliente SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    telefone VARCHAR(20)
+);
+
+CREATE TABLE funcionario (
+    id_funcionario SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    cargo VARCHAR(50) NOT NULL,
+    data_contrato DATE,
+    ativo BOOLEAN
+);
+
+CREATE TABLE fornecedor (
+    id_fornecedor SERIAL PRIMARY KEY,
+    razao_social VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(18) NOT NULL UNIQUE
+);
+
+CREATE TABLE produto (
+    id_produto SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    unidade_medida VARCHAR(20) NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    estoque DECIMAL(10,2) NOT NULL,
+    id_categoria INT NOT NULL,
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+);
+
+CREATE TABLE cliente_endereco (
+    id_cliente_endereco SERIAL PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    rua VARCHAR(200) NOT NULL,
+    bairro VARCHAR(100) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
+    complemento VARCHAR(100),
+    cep VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
+);
+
+CREATE TABLE carrinho (
+    id_carrinho SERIAL PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    dt_cadastro DATE,
+    dt_atualizacao DATE,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
+);
+
+CREATE TABLE carrinho_produto (
+    id_carrinho_produto SERIAL PRIMARY KEY,
+    id_carrinho INT NOT NULL,
+    id_produto INT NOT NULL,
+    quantidade INT NOT NULL,
+    FOREIGN KEY (id_carrinho) REFERENCES carrinho(id_carrinho),
+    FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+);
+
+CREATE TABLE lote (
+    id_lote SERIAL PRIMARY KEY,
+    id_produto INT NOT NULL,
+    id_fornecedor INT NOT NULL,
+    data_entrega DATE,
+    quantidade DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_produto) REFERENCES produto(id_produto),
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedor(id_fornecedor)
+);
+
+CREATE TABLE venda (
+    id_venda SERIAL PRIMARY KEY,
+    data_hora TIMESTAMP,
+    valor_total DECIMAL(10,2) NOT NULL,
+    id_cliente INT NOT NULL,
+    id_funcionario INT NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+);
+
+CREATE TABLE item_venda (
+    id_item_venda SERIAL PRIMARY KEY,
+    id_venda INT NOT NULL,
+    id_produto INT NOT NULL,
+    quantidade DECIMAL(10,2) NOT NULL,
+    preco_atual DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_venda) REFERENCES venda(id_venda),
+    FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+);
+
+CREATE TABLE pagamento (
+    id_pagamento SERIAL PRIMARY KEY,
+    id_venda INT NOT NULL,
+    pagamento_metodo VARCHAR(50) NOT NULL,
+    valor_total DECIMAL(10,2) NOT NULL,
+    data_criacao DATE,
+    FOREIGN KEY (id_venda) REFERENCES venda(id_venda)
+);
+
+INSERT INTO categoria (nome) VALUES
+('Frutas'),
+('Legumes'),
+('Verduras'),
+('Grãos e Cereais'),
+('Ovos e Laticínios');
+
+INSERT INTO fornecedor (razao_social, cnpj) VALUES
+('Pomar da Serra Ltda', '11111111000101'),
+('Agro Verde Distribuidora', '22222222000102'),
+('Cooperativa Solo Vivo', '33333333000103'),
+('Granja Ouro Branco', '44444444000104'),
+('Cerealista Grão Real', '55555555000105');
+
+INSERT INTO produto (nome, unidade_medida, preco_unitario, estoque, id_categoria) VALUES
+('Banana Prata', 'kg', 5.50, 50, 1),
+('Maçã Gala', 'kg', 8.90, 40, 1),
+('Laranja Pera', 'kg', 4.20, 100, 1),
+('Mamão Papaia', 'un', 6.00, 25, 1),
+('Uva Vitória', 'bdj', 7.50, 30, 1),
+('Cenoura', 'kg', 3.80, 60, 2),
+('Batata Inglesa', 'kg', 4.50, 150, 2),
+('Cebola Branca', 'kg', 3.20, 80, 2),
+('Tomate Italiano', 'kg', 7.90, 45, 2),
+('Pimentão Verde', 'kg', 5.00, 20, 2),
+('Abóbora Cabotiá', 'kg', 3.50, 35, 2),
+('Alface Crespa', 'un', 2.50, 40, 3),
+('Rúcula Hidropônica', 'un', 3.50, 15, 3),
+('Couve Manteiga', 'un', 3.00, 20, 3),
+('Espinafre', 'un', 4.00, 12, 3),
+('Brócolis Ninja', 'un', 6.50, 18, 3),
+('Coentro', 'un', 1.50, 50, 3),
+('Feijão Carioca', 'kg', 8.50, 100, 4),
+('Arroz Integral', 'kg', 6.00, 80, 4),
+('Milho de Pipoca', 'kg', 5.00, 40, 4),
+('Aveia em Flocos', 'kg', 12.00, 25, 4),
+('Grão de Bico', 'kg', 14.00, 15, 4),
+('Ovos Brancos (Dúzia)', 'cx', 12.00, 60, 5),
+('Ovos Caipira (Dúzia)', 'cx', 16.00, 30, 5),
+('Queijo Minas Frescal', 'un', 22.00, 10, 5),
+('Iogurte Natural', 'un', 4.50, 25, 5),
+('Mel Puro 500g', 'un', 28.00, 12, 5);
+
+INSERT INTO cliente (nome, cpf, telefone) VALUES
+('João Silva', '11111111111', '83999999999'),
+('Maria Oliveira', '22222222222', '83988888888');
+
+INSERT INTO funcionario (nome, cpf, cargo, data_contrato, ativo) VALUES
+('João Pereira', '12345678', 'Repositor', '2023-01-10', true),
+('Maria Souza', '87654321', 'Caixa', '2024-02-15', true),
+('Carlos Lima', '11223344', 'Auxiliar de Limpeza', '2023-06-20', true),
+('Ana Beatriz', '44332211', 'Atendente', '2022-11-05', true),
+('Pedro Santos', '99887766', 'Gerente', '2021-08-01', true);
+
+--QUESTAO 1.
+--1A
+SELECT * FROM produto ORDER BY preco_unitario ASC;
+
+--1B
+SELECT p.nome, c.nome AS categoria, p.estoque
+FROM produto p
+JOIN categoria c ON p.id_categoria = c.id_categoria
+WHERE p.estoque > 0;
+
+--1C
+SELECT nome, cpf FROM cliente ORDER BY nome ASC;
+
+--1D
+SELECT data_hora, valor_total FROM venda ORDER BY data_hora DESC;
+
+--1E
+SELECT * FROM produto WHERE estoque BETWEEN 10 AND 100;
+
+--QUESTAO 2.
+--2A
+SELECT * FROM produto WHERE id_categoria IN (1, 2, 5);
+
+--2B
+SELECT * FROM cliente WHERE nome LIKE '%Silva%';
+
+--2C
+SELECT * FROM produto WHERE estoque = 0;
+
+--2D
+SELECT * FROM produto WHERE preco_unitario > (SELECT AVG(preco_unitario) FROM produto);
+
+--2E
+SELECT DISTINCT nome FROM produto;
+
+--Questao 3.
+--3A
+SELECT COUNT(*) FROM produto;
+
+--3B
+SELECT AVG(preco_unitario) FROM produto;
+
+-- 3C: Menor e maior preço entre os produtos
+SELECT MIN(preco_unitario), MAX(preco_unitario) FROM produto;
+
+-- 3D: Valor total de todas as vendas
+SELECT SUM(valor_total) FROM venda;
+
+-- 3E: Quantidade de vendas por cliente
+SELECT id_cliente, COUNT(*) FROM venda GROUP BY id_cliente;
+
+--QUESTAO 04.
+--4A
+SELECT id_cliente, COUNT(id_venda) FROM venda GROUP BY id_cliente;
+
+--4B
+SELECT id_cliente, SUM(valor_total) FROM venda GROUP BY id_cliente;
+
+--4C
+SELECT id_cliente FROM venda GROUP BY id_cliente HAVING COUNT(id_venda) > 1;
+
+--4D
+SELECT id_produto FROM item_venda GROUP BY id_produto HAVING COUNT(id_venda) > 1;
+
+--4E
+SELECT id_fornecedor FROM lote GROUP BY id_fornecedor HAVING COUNT(id_produto) > 1;
+
+--QUESTAO 05.
+--5A
+SELECT c.nome, v.data_hora FROM venda v JOIN cliente c ON v.id_cliente = c.id_cliente;
+
+--5B
+SELECT p.nome, i.quantidade, i.subtotal FROM item_venda i JOIN produto p ON i.id_produto = p.id_produto;
+
+--5C
+SELECT p.nome, f.razao_social FROM produto p JOIN lote l ON p.id_produto = l.id_produto JOIN fornecedor f ON l.id_fornecedor = f.id_fornecedor;
+
+--5D
+SELECT nome, telefone FROM cliente;
+
+--5E
+SELECT v.id_venda, p.nome FROM item_venda i JOIN venda v ON i.id_venda = v.id_venda JOIN produto p ON i.id_produto = p.id_produto;
+
+--QUESTAO 06
+--6A
+SELECT c.nome, v.data_hora, v.valor_total FROM venda v JOIN cliente c ON v.id_cliente = c.id_cliente;
+
+--6B
+SELECT p.nome AS produto, c.nome AS cliente FROM item_venda i JOIN produto p ON i.id_produto = p.id_produto JOIN venda v ON i.id_venda = v.id_venda JOIN cliente c ON v.id_cliente = c.id_cliente;
+
+--6C
+SELECT i.*, v.data_hora, p.nome FROM item_venda i JOIN venda v ON i.id_venda = v.id_venda JOIN produto p ON i.id_produto = p.id_produto;
+
+--6D
+SELECT p.nome, i.id_item_venda FROM produto p LEFT JOIN item_venda i ON p.id_produto = i.id_produto;
+
+--6E
+SELECT c.nome, v.id_venda FROM cliente c LEFT JOIN venda v ON c.id_cliente = v.id_cliente;
+
+--QUESTAO 07.
+-- 7A
+SELECT c.id_cliente, c.nome, COUNT(v.id_venda) AS qtd_compras FROM cliente c JOIN venda v ON c.id_cliente = v.id_cliente GROUP BY c.id_cliente, c.nome HAVING COUNT(v.id_venda) > 1;
+
+--7B
+SELECT p.id_produto, p.nome, COUNT(i.id_venda) AS vezes_vendido FROM produto p JOIN item_venda i ON p.id_produto = p.id_produto GROUP BY p.id_produto, p.nome HAVING COUNT(i.id_venda) > 1;
+
+--7C
+SELECT c.nome, SUM(v.valor_total) FROM cliente c JOIN venda v ON c.id_cliente = v.id_cliente GROUP BY c.nome HAVING SUM(v.valor_total) > 100;
+
+--7D
+SELECT c.nome, SUM(v.valor_total) FROM cliente c JOIN venda v ON c.id_cliente = v.id_cliente GROUP BY c.nome HAVING SUM(v.valor_total) > (SELECT AVG(valor_total) FROM venda);
